@@ -1,0 +1,6 @@
+node_modules
+dist_electron
+dist
+.env*
+.DS_Store
+build
