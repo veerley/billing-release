@@ -283,18 +283,14 @@ const store = createStore({
       let sortedVisitsIndexes = Array.from(
         state.visitsSelectedForMoving
       ).sort();
+
       let visits = [];
       sortedVisitsIndexes.forEach((index) => {
         visits.push(state.visits[index]);
       });
+
       let fileData = saveFileToCsv(visits, false);
       await ipcRenderer.invoke("save-visits-to-file", fileData);
-
-      let newVisitsFiltered = state.visits.filter((value, index) => {
-        return sortedVisitsIndexes.indexOf(index) == -1;
-      });
-
-      state.visits = newVisitsFiltered;
     },
     sort_by_date(state) {
       let sortedVisits = sortByDate(state.visits);
