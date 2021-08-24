@@ -11,13 +11,12 @@
           placeholder="Provider"
           class="w-full input input-primary"
         />
-        <button
-          class="btn btn-primary"
-          @click="addNewProvider(providerName)"
-          :disabled="isProviderButtonDisabled"
-        >
+        <button class="btn btn-primary" @click="addNewProvider(providerName)">
           Add
         </button>
+      </div>
+      <div v-if="error" class="text-red-500">
+        <p>{{ error }}</p>
       </div>
     </div>
     <div v-if="providers.length > 0" class="w-1/2 mx-5">
@@ -46,16 +45,21 @@ export default {
   data() {
     return {
       providerName: "",
-      isProviderButtonDisabled: false,
+      error: "",
     };
   },
   methods: {
     resetFields() {
       this.providerName = "";
+      this.error = "";
     },
     addNewProvider(providerName) {
-      this.$store.commit("add_new_provider", providerName);
-      this.resetFields();
+      if (this.subscriptionType !== "INDIVIDUAL" || this.providers.length < 1) {
+        this.$store.commit("add_new_provider", providerName);
+        this.resetFields();
+      } else {
+        this.error = "Upgrade to Team Plan to add more providers!";
+      }
     },
     done() {
       this.$store.commit("set_has_added_providers", true);
@@ -67,15 +71,6 @@ export default {
     },
     subscriptionType() {
       return this.$store.state.subscriptionType;
-    },
-  },
-  watch: {
-    providers() {
-      if (this.subscriptionType === "TEAM" && this.providers.length === 1) {
-        this.isProviderButtonDisabled = false;
-      } else {
-        this.isProviderButtonDisabled = true;
-      }
     },
   },
 };
