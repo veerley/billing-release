@@ -208,9 +208,11 @@ function openDirectory() {
       properties: ["openDirectory"],
     })
     .then((result) => {
-      const directory = result.filePaths[0];
-      win.webContents.send("selected-directory", directory);
-      loadFiles(directory);
+      if (!result.canceled) {
+        const directory = result.filePaths[0];
+        win.webContents.send("selected-directory", directory);
+        loadFiles(directory);
+      }
     })
     .catch((err) => {
       console.log(err);
@@ -274,7 +276,7 @@ ipcMain.handle("create-new-file", async (event, directory, name) => {
   });
 });
 
-ipcMain.handle("save-visits-to-file", async (event, visits) => {
+ipcMain.handle("save-visits-to-file", async (event, visits, directory) => {
   await dialog
     .showSaveDialog(win, {
       title: "Save to File…",
@@ -284,6 +286,7 @@ ipcMain.handle("save-visits-to-file", async (event, visits) => {
       fs.writeFile(result.filePath, visits, "utf8", function(err) {
         if (err) console.log(err);
         console.log("It's saved!");
+        loadFiles(directory);
       });
     })
     .catch((err) => {

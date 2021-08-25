@@ -253,6 +253,7 @@ const store = createStore({
       localStorage.setItem("providers", JSON.stringify(state.providers));
     },
     set_has_directory(state, status) {
+      console.log(status);
       state.initialSetup.hasSelectedDirectory = status;
     },
     set_agency(state, agencyName) {
@@ -290,7 +291,11 @@ const store = createStore({
       });
 
       let fileData = saveFileToCsv(visits, false);
-      await ipcRenderer.invoke("save-visits-to-file", fileData);
+      await ipcRenderer.invoke(
+        "save-visits-to-file",
+        fileData,
+        localStorage.getItem("directory")
+      );
     },
     sort_by_date(state) {
       let sortedVisits = sortByDate(state.visits);
