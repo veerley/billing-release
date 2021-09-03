@@ -25,6 +25,7 @@
 
     <div v-for="(visit, index) in visits" :key="index">
       <IndividualVisit
+        v-if="renderComponent"
         :visit="visit"
         :index="index"
         :class="[isEditingVisit(index) ? $style.editingBorder : '']"
@@ -45,6 +46,7 @@ export default {
       selectedFilter: "",
       filterName: "",
       filteredNames: ["", "Name", "Date"],
+      renderComponent: true,
     };
   },
   methods: {
@@ -61,9 +63,19 @@ export default {
         this.$store.commit("sort_by_name");
       }
     },
+    forceRerender() {
+      // remove the my-component component from the DOM
+      this.renderComponent = false;
+
+      this.$nextTick(() => {
+        // add my-component component in DOM
+        this.renderComponent = true;
+      });
+    },
   },
   computed: {
     visits() {
+      this.forceRerender();
       return this.$store.state.visits;
     },
     isEditing() {

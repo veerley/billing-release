@@ -87,6 +87,7 @@ export default {
   data() {
     return {
       newReportName: "",
+      show: true,
     };
   },
   methods: {

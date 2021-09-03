@@ -253,7 +253,6 @@ const store = createStore({
       localStorage.setItem("providers", JSON.stringify(state.providers));
     },
     set_has_directory(state, status) {
-      console.log(status);
       state.initialSetup.hasSelectedDirectory = status;
     },
     set_agency(state, agencyName) {
@@ -281,9 +280,11 @@ const store = createStore({
       }
     },
     async move_visits(state) {
-      let sortedVisitsIndexes = Array.from(
-        state.visitsSelectedForMoving
-      ).sort();
+      let sortedVisitsIndexes = Array.from(state.visitsSelectedForMoving);
+
+      sortedVisitsIndexes.sort(function(a, b) {
+        return a - b;
+      });
 
       let visits = [];
       sortedVisitsIndexes.forEach((index) => {
@@ -296,6 +297,8 @@ const store = createStore({
         fileData,
         localStorage.getItem("directory")
       );
+
+      state.visitsSelectedForMoving = new Set();
     },
     sort_by_date(state) {
       let sortedVisits = sortByDate(state.visits);
